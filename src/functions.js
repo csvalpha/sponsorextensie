@@ -75,7 +75,7 @@ function navigationCompleteListener(event) {
         type: "basic",
         title: "Deze website heeft ook een sponsorkliks link!",
         message: "Klik op deze notificatie of de icoon van de extensie om sponsorkliks te gebruiken.",
-        iconUrl: "/icons/icon128.png"
+        iconUrl: browser.extension.getURL("icons/icon128.png")
     }, function (nId) {
         notificationId = nId;
     });
