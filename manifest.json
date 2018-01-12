@@ -1,27 +1,26 @@
 {
   "name": "C.S.R. Sponsorkliks Extensie",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "manifest_version": 2,
   "description": "Wordt eraan herinnerd om relevante websites via Sponsorkliks te bezoeken",
   "homepage_url": "https://csrdelft.nl/",
   "icons": {
-    "16": "icons/icon16.png",
+    "16": "icons/icon48.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
   "default_locale": "en",
   "background": {
-    "page": "src/bg/background.html",
-    "persistent": true
+    "page": "src/bg/background.html"
   },
   "page_action": {
-    "default_icon": "icons/icon19.png",
-    "default_title": "page action demo",
-    "default_popup": "src/page_action/page_action.html"
+    "default_icon": "icons/icon48.png"
   },
   "permissions": [
-    "contentSettings",
-    "http://*/*",
-    "https://*/*"
+    "webNavigation",
+    "alarms",
+    "notifications",
+    "activeTab",
+    "*://*.csrdelft.nl/API/*"
   ]
 }
