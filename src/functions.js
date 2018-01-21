@@ -1,4 +1,4 @@
-const API = "http://local.csrdelft.nl/API/2.0/sponsorkliks";
+const API = "http://csrdelft.nl/API/2.0/sponsorkliks";
 const API_TIMESTAMP = API + "/timestamp";
 const SPONSOR_LINK_FORMAT = "https://www.sponsorkliks.com/link.php?club={club_id}&shop_id={shop_id}&shop={shop_name}";
 const URLS_KEY = "urls";
