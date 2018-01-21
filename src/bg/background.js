@@ -2,12 +2,7 @@ var sponsorkliks = [];
 
 checkUpdate();
 
-if (store.get(URLFILTERS_KEY)) {
-    browser.webNavigation.onCompleted.addListener(
-        navigationCompleteListener,
-        {url: store.get(URLFILTERS_KEY)}
-    );
-}
+browser.webNavigation.onCompleted.addListener(navigationCompleteListener);
 
 // GC closing tabs to keep sponsorkliks map clean
 browser.tabs.onRemoved.addListener(function (tabId) {
@@ -26,7 +21,7 @@ browser.runtime.onInstalled.addListener(function () {
 });
 
 browser.alarms.onAlarm.addListener(function (alarm) {
-   if (alarm.name === "SKupdateCheck") {
-       checkUpdate();
-   }
+    if (alarm.name === "SKupdateCheck") {
+        checkUpdate();
+    }
 });
