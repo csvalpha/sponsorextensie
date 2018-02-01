@@ -13,33 +13,40 @@ const CUSTOM_TARGETS = {
         'link': 'https://partnerprogramma.bol.com/click/click?p=1&t=url&s=2379&url=https%3A//www.bol.com/nl/index.html&f=TXL&name=tekstlink'
     }
 };
+const CHROME = typeof browser === 'undefined';
 
-if (typeof browser === 'undefined') {
+if (CHROME) {
     browser = chrome;
 }
 
 function checkUpdate() {
-    if (typeof store.get(URLS_KEY) !== 'undefined') {
-        var lastCheck = store.get(LASTCHECK_KEY) || 0;
-        if (lastCheck < unixDayAgo()) {
-            var lastTimestamp = store.get(TIMESTAMP_KEY) || 0;
-            $.get(API_TIMESTAMP, function (timestamp) {
-                if (lastTimestamp < parseInt(timestamp)) {
-                    store.set(LASTCHECK_KEY, unixTime(new Date()));
-                    store.set(TIMESTAMP_KEY, timestamp);
-                    updateURLs()
-                }
-            });
+    getStorage(storage => {
+        if (typeof storage[URLS_KEY] !== 'undefined') {
+            const lastCheck = storage[LASTCHECK_KEY] || 0;
+            if (lastCheck < unixDayAgo()) {
+                const lastTimestamp = storage[TIMESTAMP_KEY] || 0;
+                $.get(API_TIMESTAMP, function (timestamp) {
+                    if (lastTimestamp < parseInt(timestamp)) {
+                        browser.storage.local.set({
+                            [LASTCHECK_KEY]: unixTime(new Date()),
+                            [TIMESTAMP_KEY]: timestamp
+                        });
+                        updateURLs();
+                    }
+                });
+            }
+        } else {
+            updateURLs();
         }
-    } else {
-        updateURLs();
-    }
+    });
 }
 
 function updateURLs() {
     $.getJSON(API, function (data) {
-        store.set(CLUBID_KEY, data[CLUBID_KEY]);
-        store.set(URLS_KEY, data['affiliates']);
+        browser.storage.local.set({
+            [CLUBID_KEY]: data[CLUBID_KEY],
+            [URLS_KEY]: data['affiliates']
+        });
     });
 }
 
@@ -47,8 +54,8 @@ function navigateTo(tabId, target) {
     browser.tabs.update(tabId, {url: target});
 }
 
-function formatLink(data) {
-    data['club_id'] = store.get(CLUBID_KEY);
+function formatLink(clubid, data) {
+    data['club_id'] = clubid;
     return SPONSOR_LINK_FORMAT.replace(/{(.+?)}/g, function (match, key) {
         return typeof data[key] !== 'undefined' ? data[key] : match;
     });
@@ -97,39 +104,41 @@ function handleCustomTarget(target, tabId, url, hostname) {
 }
 
 function navigationCompleteListener(event) {
-    var tabId = event.tabId;
-    var url = event.url;
-    var hostname = extractHostname(url);
-    var custom_target = CUSTOM_TARGETS[hostname];
+    getStorage(storage => {
+        const tabId = event.tabId;
+        const url = event.url;
+        const hostname = extractHostname(url);
+        const custom_target = CUSTOM_TARGETS[hostname];
 
-    // If we have a custom affiliate link for the current target
-    if (custom_target) {
-        return handleCustomTarget(custom_target, tabId, url, hostname);
-    }
+        // If we have a custom affiliate link for the current target
+        if (custom_target) {
+            return handleCustomTarget(custom_target, tabId, url, hostname);
+        }
 
-    var urls = store.get(URLS_KEY);
-    var targets = urls[hostname];
+        const urls = storage[URLS_KEY];
+        const targets = urls[hostname];
 
-    // If we're not on a sponsorkliks capable page: return
-    if (!targets) {
-        return;
-    }
+        // If we're not on a sponsorkliks capable page: return
+        if (!targets) {
+            return;
+        }
 
-    // Check if we're still visiting the same site we already went through sponsorkliks for
-    if (hostname === sponsorkliks[tabId]) {
-        return;
-    }
+        // Check if we're still visiting the same site we already went through sponsorkliks for
+        if (hostname === sponsorkliks[tabId]) {
+            return;
+        }
 
-    // TODO: Implement support for multiple targets per hostname
-    var target = targets[0];
+        // TODO: Implement support for multiple targets per hostname
+        const target = targets[0];
 
-    enableLinking(
-        formatLink(target),
-        target,
-        tabId,
-        hostname,
-        target['shop_name'] + " heeft ook een sponsorkliks link!"
-    );
+        enableLinking(
+            formatLink(storage[CLUBID_KEY], target),
+            target,
+            tabId,
+            hostname,
+            target['shop_name'] + " heeft ook een sponsorkliks link!"
+        );
+    });
 }
 
 function extractHostname(url) {
@@ -137,11 +146,29 @@ function extractHostname(url) {
     return ((url.indexOf("://") > -1) ? url.split('/')[2] : url.split('/')[0]).split('?')[0];
 }
 
+function getStorage(key, callback) {
+    if (!callback || typeof callback !== 'function') {
+        callback = key;
+        key = false;
+    }
+
+    if (CHROME) {
+        if (key) {
+            browser.storage.local.get(key, callback);
+        } else {
+            browser.storage.local.get(callback);
+        }
+    } else {
+        const promise = (key) ? browser.storage.local.get(key) : browser.storage.local.get();
+        promise.then(callback);
+    }
+}
+
 /**
  * Return the unix timestamp of 1 day ago
  */
 function unixDayAgo() {
-    var d = new Date();
+    const d = new Date();
     d.setDate(d.getDate() - 1);
     return unixTime(d);
 }

@@ -1,6 +1,6 @@
 {
   "name": "C.S.R. Sponsorkliks Extensie",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "manifest_version": 2,
   "description": "Wordt eraan herinnerd om relevante websites via Sponsorkliks te bezoeken",
   "homepage_url": "https://csrdelft.nl/",
@@ -20,6 +20,7 @@
     "alarms",
     "notifications",
     "activeTab",
+    "storage",
     "*://*.csrdelft.nl/API/*"
   ]
 }
