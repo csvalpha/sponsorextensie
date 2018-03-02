@@ -1,11 +1,11 @@
-const API = "http://csrdelft.nl/API/2.0/sponsorkliks";
+const API = "http://csrdelft.nl/API/2.0/sponsorlinks";
 const API_TIMESTAMP = API + "/timestamp";
-const SPONSOR_LINK_FORMAT = "https://www.sponsorkliks.com/link.php?club={club_id}&shop_id={shop_id}&shop={shop_name}";
+const SPONSOR_LINK_FORMAT = atob("aHR0cHM6Ly93d3cuc3BvbnNvcmtsaWtzLmNvbS9saW5rLnBocD9jbHViPXtjbHViX2lkfSZzaG9wX2lkPXtzaG9wX2lkfSZzaG9wPXtzaG9wX25hbWV9");
 const URLS_KEY = "urls";
 const CLUBID_KEY = "club_id";
 const LASTCHECK_KEY = "lastcheck";
 const TIMESTAMP_KEY = "timestamp";
-const NOTIFICATION_ID = "sponsorkliks-notification";
+const NOTIFICATION_ID = "sponsor-notification";
 const UPDATE_CHECK_INTERVAL = 600;
 const CUSTOM_TARGETS = {
     'www.bol.com': {
@@ -65,7 +65,7 @@ function enableLinking(link, target, tabId, hostname, notificationTitle) {
     // Page action
     browser.pageAction.show(tabId);
     browser.pageAction.onClicked.addListener(function () {
-        sponsorkliks[tabId] = hostname;
+        sponsortabs[tabId] = hostname;
         browser.notifications.clear(NOTIFICATION_ID);
         navigateTo(tabId, link);
     });
@@ -81,7 +81,7 @@ function enableLinking(link, target, tabId, hostname, notificationTitle) {
 
     browser.notifications.onClicked.addListener(function (notificationId) {
         if (notificationId === NOTIFICATION_ID) {
-            sponsorkliks[tabId] = hostname;
+            sponsortabs[tabId] = hostname;
             browser.notifications.clear(notificationId);
             navigateTo(tabId, link);
         }
@@ -89,8 +89,8 @@ function enableLinking(link, target, tabId, hostname, notificationTitle) {
 }
 
 function handleCustomTarget(target, tabId, url, hostname) {
-    // Check if we're still visiting the same site we already went through sponsorkliks for
-    if (hostname === sponsorkliks[tabId]) {
+    // Check if we're still visiting the same site we already went through a sponsored link for
+    if (hostname === sponsortabs[tabId]) {
         return;
     }
 
@@ -118,13 +118,13 @@ function navigationCompleteListener(event) {
         const urls = storage[URLS_KEY];
         const targets = urls[hostname];
 
-        // If we're not on a sponsorkliks capable page: return
+        // If we're not on a sponsored link capable page: return
         if (!targets) {
             return;
         }
 
-        // Check if we're still visiting the same site we already went through sponsorkliks for
-        if (hostname === sponsorkliks[tabId]) {
+        // Check if we're still visiting the same site we already went through a sponsored link for
+        if (hostname === sponsortabs[tabId]) {
             return;
         }
 
@@ -136,7 +136,7 @@ function navigationCompleteListener(event) {
             target,
             tabId,
             hostname,
-            target['shop_name'] + " heeft ook een sponsorkliks link!"
+            target['shop_name'] + " heeft ook een gesponsorde link!"
         );
     });
 }

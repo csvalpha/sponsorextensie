@@ -1,8 +1,8 @@
 {
-  "name": "C.S.R. Sponsorkliks Extensie",
-  "version": "2.0.2",
+  "name": "C.S.R. Sponsor Extensie",
+  "version": "2.0.3",
   "manifest_version": 2,
-  "description": "Wordt eraan herinnerd om relevante websites via Sponsorkliks te bezoeken",
+  "description": "Wordt eraan herinnerd om relevante websites via gesponsorde C.S.R. links te bezoeken",
   "homepage_url": "https://csrdelft.nl/",
   "icons": {
     "16": "icons/icon128.png",
