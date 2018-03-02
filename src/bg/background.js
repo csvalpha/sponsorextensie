@@ -25,3 +25,11 @@ browser.alarms.onAlarm.addListener(function (alarm) {
         checkUpdate();
     }
 });
+
+// Check whether new version is installed
+browser.runtime.onInstalled.addListener(function(details){
+    if(details.reason == "update"){
+        browser.storage.local.clear();
+        checkUpdate();
+    }
+});

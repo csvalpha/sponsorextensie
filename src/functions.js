@@ -108,6 +108,7 @@ function navigationCompleteListener(event) {
         const tabId = event.tabId;
         const url = event.url;
         const hostname = extractHostname(url);
+        const nowww_hostname = hostname.replace(/^(www\.)/,"");
         const custom_target = CUSTOM_TARGETS[hostname];
 
         // If we have a custom affiliate link for the current target
@@ -116,7 +117,8 @@ function navigationCompleteListener(event) {
         }
 
         const urls = storage[URLS_KEY];
-        const targets = urls[hostname];
+        const targets = (nowww_hostname !== hostname) ? urls[hostname].concat(urls[nowww_hostname]) : urls[hostname] ;
+
 
         // If we're not on a sponsored link capable page: return
         if (!targets) {
