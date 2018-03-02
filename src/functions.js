@@ -117,7 +117,7 @@ function navigationCompleteListener(event) {
         }
 
         const urls = storage[URLS_KEY];
-        const targets = (nowww_hostname !== hostname) ? urls[hostname].concat(urls[nowww_hostname]) : urls[hostname] ;
+        const targets = (nowww_hostname !== hostname) ? (urls[hostname] || []).concat(urls[nowww_hostname]) : urls[hostname] ;
 
 
         // If we're not on a sponsored link capable page: return
