@@ -1,18 +1,10 @@
-const API = "http://csrdelft.nl/API/2.0/sponsorlinks";
-const API_TIMESTAMP = API + "/timestamp";
-const SPONSOR_LINK_FORMAT = atob("aHR0cHM6Ly93d3cuc3BvbnNvcmtsaWtzLmNvbS9saW5rLnBocD9jbHViPXtjbHViX2lkfSZzaG9wX2lkPXtzaG9wX2lkfSZzaG9wPXtzaG9wX25hbWV9");
+const CLUBID = 3605;
+const API = "https://www.sponsorkliks.com/api/?club="+CLUBID+"&call=webshops_club_extension";
 const URLS_KEY = "urls";
-const CLUBID_KEY = "club_id";
 const LASTCHECK_KEY = "lastcheck";
-const TIMESTAMP_KEY = "timestamp";
 const NOTIFICATION_ID = "sponsor-notification";
 const UPDATE_CHECK_INTERVAL = 600;
-const CUSTOM_TARGETS = {
-    'www.bol.com': {
-        'shop_name': "bol.com",
-        'link': 'https://partnerprogramma.bol.com/click/click?p=1&t=url&s=2379&url=https%3A//www.bol.com/nl/index.html&f=TXL&name=tekstlink'
-    }
-};
+const CUSTOM_TARGETS = {};
 const CHROME = typeof browser === 'undefined';
 
 if (CHROME) {
@@ -24,16 +16,10 @@ function checkUpdate() {
         if (typeof storage[URLS_KEY] !== 'undefined') {
             const lastCheck = storage[LASTCHECK_KEY] || 0;
             if (lastCheck < unixDayAgo()) {
-                const lastTimestamp = storage[TIMESTAMP_KEY] || 0;
-                $.get(API_TIMESTAMP, function (timestamp) {
-                    if (lastTimestamp < parseInt(timestamp)) {
-                        browser.storage.local.set({
-                            [LASTCHECK_KEY]: unixTime(new Date()),
-                            [TIMESTAMP_KEY]: timestamp
-                        });
-                        updateURLs();
-                    }
+                browser.storage.local.set({
+                    [LASTCHECK_KEY]: unixTime(new Date()),
                 });
+                updateURLs();
             }
         } else {
             updateURLs();
@@ -44,21 +30,22 @@ function checkUpdate() {
 function updateURLs() {
     $.getJSON(API, function (data) {
         browser.storage.local.set({
-            [CLUBID_KEY]: data[CLUBID_KEY],
-            [URLS_KEY]: data['affiliates']
+            [URLS_KEY]: data['webshops'].reduce(function(map, obj) {
+                let hostname = obj.orig_url;
+                if (hostname.indexOf('//') > -1) {
+                    hostname = hostname.split('/')[2]
+                } else {
+                    hostname = hostname.split('/')[0]
+                }
+                map[hostname] = obj;
+                return map;
+            }, {})
         });
     });
 }
 
 function navigateTo(tabId, target) {
     browser.tabs.update(tabId, {url: target});
-}
-
-function formatLink(clubid, data) {
-    data['club_id'] = clubid;
-    return SPONSOR_LINK_FORMAT.replace(/{(.+?)}/g, function (match, key) {
-        return typeof data[key] !== 'undefined' ? data[key] : match;
-    });
 }
 
 function enableLinking(link, target, tabId, hostname, notificationTitle) {
@@ -99,7 +86,7 @@ function handleCustomTarget(target, tabId, url, hostname) {
         target,
         tabId,
         hostname,
-        target['shop_name'] + " heeft een C.S.R. affiliate link!"
+        target['name_short'] + " heeft een C.S.R. affiliate link!"
     );
 }
 
@@ -111,17 +98,22 @@ function navigationCompleteListener(event) {
         const nowww_hostname = hostname.replace(/^(www\.)/,"");
         const custom_target = CUSTOM_TARGETS[hostname];
 
+        // If there is no hostname found: return
+        if (!hostname) {
+            return;
+        }
+
         // If we have a custom affiliate link for the current target
         if (custom_target) {
             return handleCustomTarget(custom_target, tabId, url, hostname);
         }
 
         const urls = storage[URLS_KEY];
-        const targets = (nowww_hostname !== hostname) ? (urls[hostname] || []).concat(urls[nowww_hostname]) : urls[hostname] ;
+        const target = (nowww_hostname !== hostname) ? urls[hostname] || urls[nowww_hostname] : urls[hostname] ;
 
 
         // If we're not on a sponsored link capable page: return
-        if (!targets) {
+        if (!target) {
             return;
         }
 
@@ -130,15 +122,12 @@ function navigationCompleteListener(event) {
             return;
         }
 
-        // TODO: Implement support for multiple targets per hostname
-        const target = targets[0];
-
         enableLinking(
-            formatLink(storage[CLUBID_KEY], target),
+            target["link"],
             target,
             tabId,
             hostname,
-            target['shop_name'] + " heeft ook een gesponsorde link!"
+            target['name_short'] + " heeft ook een gesponsorde link!"
         );
     });
 }
