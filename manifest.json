@@ -3,7 +3,7 @@
   "version": "3.0.0",
   "manifest_version": 2,
   "description": "Wordt eraan herinnerd om relevante websites via gesponsorde C.S.V. Alpha links te bezoeken",
-  "homepage_url": "https://csrdelft.nl/",
+  "homepage_url": "https://csvalpha.nl/",
   "icons": {
     "16": "icons/icon128.png",
     "48": "icons/icon48.png",
@@ -21,6 +21,11 @@
     "notifications",
     "activeTab",
     "storage",
-    "*://*.csrdelft.nl/API/*"
-  ]
+    "*://*.sponsorkliks.nl/api/*"
+  ],
+  "applications": {
+    "gecko": {
+      "id": "sponsorextensie@csvalpha.nl"
+    }
+  }
 }
