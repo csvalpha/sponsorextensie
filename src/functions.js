@@ -86,7 +86,7 @@ function handleCustomTarget(target, tabId, url, hostname) {
         target,
         tabId,
         hostname,
-        target['name_short'] + " heeft een C.S.R. affiliate link!"
+        target['name_short'] + " heeft een C.S.V. Alpha affiliate link!"
     );
 }
 
