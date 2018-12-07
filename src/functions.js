@@ -19,28 +19,32 @@ function checkUpdate() {
                 browser.storage.local.set({
                     [LASTCHECK_KEY]: unixTime(new Date()),
                 });
-                updateURLs();
+                updateURLs().catch(() => console.log("Failed to update urls"));
             }
         } else {
-            updateURLs();
+            updateURLs().catch(() => console.log("Failed to update urls"));
         }
     });
 }
 
-function updateURLs() {
-    $.getJSON(API, function (data) {
-        browser.storage.local.set({
-            [URLS_KEY]: data['webshops'].reduce(function(map, obj) {
-                let hostname = obj.orig_url;
-                if (hostname.indexOf('//') > -1) {
-                    hostname = hostname.split('/')[2]
-                } else {
-                    hostname = hostname.split('/')[0]
-                }
-                map[hostname] = obj;
-                return map;
-            }, {})
-        });
+async function updateURLs() {
+    const response = await fetch(API);
+    const data = await response.json();
+
+    browser.storage.local.set({
+        [URLS_KEY]: data['webshops'].reduce(function (map, obj) {
+            // Convert array to map which maps the shop's url to it's info
+            let hostname = obj.orig_url;
+            if (hostname.indexOf('//') > -1) {
+                // Remove http(s):// and everything after the domain name
+                hostname = hostname.split('/')[2]
+            } else {
+                // Remove everything after the domain name
+                hostname = hostname.split('/')[0]
+            }
+            map[hostname] = obj;
+            return map;
+        })
     });
 }
 
@@ -109,6 +113,10 @@ function navigationCompleteListener(event) {
         }
 
         const urls = storage[URLS_KEY];
+        if (!urls) {
+            // Apparently we were not able to retrieve the urls from the API yet
+            return;
+        }
         const target = (nowww_hostname !== hostname) ? urls[hostname] || urls[nowww_hostname] : urls[hostname] ;
 
 
