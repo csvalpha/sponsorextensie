@@ -1,4 +1,4 @@
-const CLUBID = 3605;
+const CLUBID = 4509;
 const API = "https://www.sponsorkliks.com/api/?club="+CLUBID+"&call=webshops_club_extension";
 const URLS_KEY = "urls";
 const LASTCHECK_KEY = "lastcheck";
