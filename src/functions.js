@@ -2,6 +2,7 @@ const CLUBID = 3605;
 const API = "https://www.sponsorkliks.com/api/?club="+CLUBID+"&call=webshops_club_extension";
 const URLS_KEY = "urls";
 const LASTCHECK_KEY = "lastcheck";
+const ALWAYS_REDIRECT_KEY = "always-redirect";
 const NOTIFICATION_ID = "sponsor-notification-";
 const UPDATE_CHECK_INTERVAL = 600;
 const CUSTOM_TARGETS = {};
