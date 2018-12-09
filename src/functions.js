@@ -39,10 +39,12 @@ async function updateURLs() {
     const data = await response.json();
 
     browser.storage.local.set({
-        [URLS_KEY]: data['webshops'].reduce(function (map, obj) {
-            map[extractHostname(obj.orig_url)] = obj;
-            return map;
-        }, {})
+        [URLS_KEY]: data['webshops']
+            .filter(obj => !!obj.orig_url)
+            .reduce(function (map, obj) {
+                map[extractHostname(obj.orig_url)] = obj;
+                return map;
+            }, {})
     });
 }
 
