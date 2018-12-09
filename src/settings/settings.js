@@ -23,10 +23,9 @@ function saveOptions(e) {
     });
 
     const settingsSaved = document.getElementById('settings-saved');
-    console.log("Settings saved");
-    settingsSaved.innerHTML = "Wijzigingen opgeslagen";
+    settingsSaved.innerHTML = 'Wijzigingen opgeslagen';
     setTimeout(function() {
-        settingsSaved.innerText = "";
+        settingsSaved.innerText = '';
     }, 1000)
 }
 document.getElementById('always-redirect').addEventListener('change', saveOptions);

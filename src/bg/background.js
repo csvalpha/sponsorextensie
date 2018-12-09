@@ -14,21 +14,21 @@ browser.tabs.onRemoved.addListener(function (tabId) {
 
 // Register for periodic endpoint updates
 browser.runtime.onInstalled.addListener(function () {
-    browser.alarms.create("SLupdateCheck", {
+    browser.alarms.create('SLupdateCheck', {
         delayInMinutes: UPDATE_CHECK_INTERVAL,
         periodInMinutes: UPDATE_CHECK_INTERVAL
     })
 });
 
 browser.alarms.onAlarm.addListener(function (alarm) {
-    if (alarm.name === "SLupdateCheck") {
+    if (alarm.name === 'SLupdateCheck') {
         checkUpdate();
     }
 });
 
 // Check whether new version is installed
 browser.runtime.onInstalled.addListener(function(details){
-    if(details.reason == "update"){
+    if(details.reason === 'update'){
         browser.storage.local.clear();
         checkUpdate();
     }
