@@ -1,9 +1,9 @@
 const CLUBID = 3605;
-const API = "https://www.sponsorkliks.com/api/?club="+CLUBID+"&call=webshops_club_extension";
-const URLS_KEY = "urls";
-const LASTCHECK_KEY = "lastcheck";
-const ALWAYS_REDIRECT_KEY = "always-redirect";
-const NOTIFICATION_ID = "sponsor-notification-";
+const API = 'https://www.sponsorkliks.com/api/?club='+CLUBID+'&call=webshops_club_extension';
+const URLS_KEY = 'urls';
+const LASTCHECK_KEY = 'lastcheck';
+const ALWAYS_REDIRECT_KEY = 'always-redirect';
+const NOTIFICATION_ID = 'sponsor-notification-';
 const UPDATE_CHECK_INTERVAL = 600;
 const CUSTOM_TARGETS = {};
 const CHROME = typeof browser === 'undefined';
@@ -24,10 +24,10 @@ function checkUpdate() {
                 browser.storage.local.set({
                     [LASTCHECK_KEY]: unixTime(new Date()),
                 });
-                updateURLs().catch(() => console.log("Failed to update urls"));
+                updateURLs().catch(() => console.log('Failed to update urls'));
             }
         } else {
-            updateURLs().catch(() => console.log("Failed to update urls"));
+            updateURLs().catch(() => console.log('Failed to update urls'));
         }
     });
 }
@@ -76,10 +76,10 @@ function enableLinking(link, tabId, hostname, notificationTitle) {
 
     // Notification
     browser.notifications.create(NOTIFICATION_ID+tabId, {
-        type: "basic",
+        type: 'basic',
         title: notificationTitle,
-        message: "Klik op deze notificatie of de icoon van de extensie om via die link te gaan.",
-        iconUrl: browser.extension.getURL("icons/icon128.png")
+        message: 'Klik op deze notificatie of de icoon van de extensie om via die link te gaan.',
+        iconUrl: browser.extension.getURL('icons/icon128.png')
     }, function (nId) {
     });
 
@@ -108,7 +108,7 @@ function handleCustomTarget(target, tabId, hostname) {
         target['link'],
         tabId,
         hostname,
-        target['name_short'] + " heeft een C.S.R. affiliate link!"
+        target['name_short'] + ' heeft een C.S.R. affiliate link!'
     );
 }
 
@@ -121,7 +121,7 @@ function navigationCompleteListener(event) {
         const tabId = event.tabId;
         const url = event.url;
         const hostname = extractHostname(url);
-        const nowww_hostname = hostname.replace(/^(www\.)/,"");
+        const nowww_hostname = hostname.replace(/^(www\.)/,'');
         const custom_target = CUSTOM_TARGETS[hostname];
 
         // If there is no hostname found: return
@@ -157,10 +157,10 @@ function navigationCompleteListener(event) {
             navigateTo(tabId, target['link']);
         } else {
             enableLinking(
-                target["link"],
+                target['link'],
                 tabId,
                 hostname,
-                target['name_short'] + " heeft ook een gesponsorde link!"
+                target['name_short'] + ' heeft ook een gesponsorde link!'
             );
         }
     });
@@ -175,7 +175,7 @@ function navigationCompleteListener(event) {
  * @returns {string} url with the protocol, path and get parameters stripped
  */
 function extractHostname(url) {
-    return ((url.indexOf("://") > -1) ? url.split('/')[2] : url.split('/')[0]).split('?')[0];
+    return ((url.indexOf('://') > -1) ? url.split('/')[2] : url.split('/')[0]).split('?')[0];
 }
 
 /**
