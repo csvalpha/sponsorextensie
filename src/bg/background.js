@@ -2,7 +2,7 @@ var sponsortabs = [];
 
 checkUpdate();
 
-browser.webNavigation.onCompleted.addListener(navigationCompleteListener);
+browser.webNavigation.onCommitted.addListener(navigationCompleteListener);
 
 // GC closing tabs to keep sponsortabs map clean
 browser.tabs.onRemoved.addListener(function (tabId) {
