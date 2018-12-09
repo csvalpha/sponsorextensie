@@ -11,6 +11,10 @@ if (CHROME) {
     browser = chrome;
 }
 
+/**
+ * Check if we should update the websites with affiliate links from the API
+ * Links are updated every 24 hours
+ */
 function checkUpdate() {
     getStorage(storage => {
         if (typeof storage[URLS_KEY] !== 'undefined') {
@@ -27,6 +31,9 @@ function checkUpdate() {
     });
 }
 
+/**
+ * Get all the websites with affiliate links from the API
+ */
 async function updateURLs() {
     const response = await fetch(API);
     const data = await response.json();
@@ -39,10 +46,23 @@ async function updateURLs() {
     });
 }
 
+/**
+ * Change the current website on the specified tab
+ * @param tabId {number} id of the tab to change the website of
+ * @param target {string} new website url
+ */
 function navigateTo(tabId, target) {
     browser.tabs.update(tabId, {url: target});
 }
 
+/**
+ * Show page action and notification for website which has an affiliate link
+ * @param link {string} affiliate link
+ * @param target {array} target information
+ * @param tabId {number} tab id of the website
+ * @param hostname {string} hostname of the website
+ * @param notificationTitle {string} title of the notification
+ */
 function enableLinking(link, target, tabId, hostname, notificationTitle) {
     // Page action
     browser.pageAction.show(tabId);
@@ -70,6 +90,13 @@ function enableLinking(link, target, tabId, hostname, notificationTitle) {
     });
 }
 
+/**
+ * Handle a website that has a custom affiliate link that was not received via the API
+ * @param target {array} target information
+ * @param tabId {number} tab id of the website
+ * @param url {string} current website url
+ * @param hostname {string} hostname of the website
+ */
 function handleCustomTarget(target, tabId, url, hostname) {
     // Check if we're still visiting the same site we already went through a sponsored link for
     if (hostname === sponsortabs[tabId]) {
@@ -85,6 +112,10 @@ function handleCustomTarget(target, tabId, url, hostname) {
     );
 }
 
+/**
+ * Called when a user navigates to an url
+ * @param event {object}
+ */
 function navigationCompleteListener(event) {
     getStorage(storage => {
         const tabId = event.tabId;
@@ -110,7 +141,6 @@ function navigationCompleteListener(event) {
         }
         const target = (nowww_hostname !== hostname) ? urls[hostname] || urls[nowww_hostname] : urls[hostname] ;
 
-
         // If we're not on a sponsored link capable page: return
         if (!target) {
             return;
@@ -131,11 +161,25 @@ function navigationCompleteListener(event) {
     });
 }
 
+/**
+ * Extract the hostname from a full url
+ * Examples:
+ * http://www.google.com/search?q=example => www.google.com
+ * https://example.com?example => example.com
+ * @param url {string} full url
+ * @returns {string} url with the protocol, path and get parameters stripped
+ */
 function extractHostname(url) {
-    //find & remove protocol (http, ftp, etc.) and get hostname, then find & remove "?"
     return ((url.indexOf("://") > -1) ? url.split('/')[2] : url.split('/')[0]).split('?')[0];
 }
 
+/**
+ * Get object(s) from local storage
+ * If the second parameter is not set, the first parameter will be used as callback
+ * and all objects will be retrieved instead of just the one specified by the key
+ * @param key {string=} object to get from storage
+ * @param callback {function} function to call when the object(s) has/have loaded
+ */
 function getStorage(key, callback) {
     if (!callback || typeof callback !== 'function') {
         callback = key;
@@ -156,6 +200,7 @@ function getStorage(key, callback) {
 
 /**
  * Return the unix timestamp of 1 day ago
+ * @returns {number} unix timestamp in seconds
  */
 function unixDayAgo() {
     const d = new Date();
@@ -163,6 +208,11 @@ function unixDayAgo() {
     return unixTime(d);
 }
 
+/**
+ * Convert Date object to unix time in seconds
+ * @param date {Date} Date object
+ * @returns {number} unix time in seconds
+ */
 function unixTime(date) {
     return Math.round((date.getTime() / 1000));
 }
