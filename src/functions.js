@@ -2,7 +2,7 @@ const CLUBID = 3605;
 const API = "https://www.sponsorkliks.com/api/?club="+CLUBID+"&call=webshops_club_extension";
 const URLS_KEY = "urls";
 const LASTCHECK_KEY = "lastcheck";
-const NOTIFICATION_ID = "sponsor-notification";
+const NOTIFICATION_ID = "sponsor-notification-";
 const UPDATE_CHECK_INTERVAL = 600;
 const CUSTOM_TARGETS = {};
 const CHROME = typeof browser === 'undefined';
@@ -62,7 +62,7 @@ function enableLinking(link, target, tabId, hostname, notificationTitle) {
     });
 
     // Notification
-    browser.notifications.create(NOTIFICATION_ID, {
+    browser.notifications.create(NOTIFICATION_ID+tabId, {
         type: "basic",
         title: notificationTitle,
         message: "Klik op deze notificatie of de icoon van de extensie om via die link te gaan.",
@@ -71,7 +71,7 @@ function enableLinking(link, target, tabId, hostname, notificationTitle) {
     });
 
     browser.notifications.onClicked.addListener(function (notificationId) {
-        if (notificationId === NOTIFICATION_ID) {
+        if (notificationId === NOTIFICATION_ID+tabId) {
             sponsortabs[tabId] = hostname;
             browser.notifications.clear(notificationId);
             navigateTo(tabId, link);
