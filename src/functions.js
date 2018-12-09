@@ -16,7 +16,7 @@ if (CHROME) {
  * Links are updated every 24 hours
  */
 function checkUpdate() {
-    getStorage(storage => {
+    getStorage([URLS_KEY, LASTCHECK_KEY], storage => {
         if (typeof storage[URLS_KEY] !== 'undefined') {
             const lastCheck = storage[LASTCHECK_KEY] || 0;
             if (lastCheck < unixDayAgo()) {
@@ -114,7 +114,7 @@ function handleCustomTarget(target, tabId, hostname) {
  * @param event {object}
  */
 function navigationCompleteListener(event) {
-    getStorage(storage => {
+    getStorage(URLS_KEY, storage => {
         const tabId = event.tabId;
         const url = event.url;
         const hostname = extractHostname(url);
@@ -173,7 +173,7 @@ function extractHostname(url) {
  * Get object(s) from local storage
  * If the second parameter is not set, the first parameter will be used as callback
  * and all objects will be retrieved instead of just the one specified by the key
- * @param key {string=} object to get from storage
+ * @param key {string|string[]=} object(s) to get from storage
  * @param callback {function} function to call when the object(s) has/have loaded
  */
 function getStorage(key, callback) {
