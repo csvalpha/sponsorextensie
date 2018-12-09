@@ -4,6 +4,15 @@
     <head>
         <meta charset="utf-8"/>
         <title>C.S.R. Sponsor Extensie - Instellingen</title>
+        <style>
+            #settings-saved {
+                color: green;
+            }
+            form {
+                margin-top: 5px;
+                margin-bottom: 25px;
+            }
+        </style>
     </head>
 
     <body>
@@ -11,10 +20,10 @@
             <p>
                 <label for="always-redirect">
                     <input type="checkbox" name="always-redirect" id="always-redirect"/>
-                    &nbsp;&nbsp;Altijd doorsturen
+                    &nbsp;&nbsp;Automatisch doorsturen naar affiliate link
                 </label>
             </p>
-            <button type="submit">Save</button>
+            <p id="settings-saved"></p>
         </form>
         <script src="/src/functions.js"></script>
         <script src="settings.js"></script>

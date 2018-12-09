@@ -117,7 +117,7 @@ function handleCustomTarget(target, tabId, hostname) {
  * @param event {object}
  */
 function navigationCompleteListener(event) {
-    getStorage(URLS_KEY, storage => {
+    getStorage([URLS_KEY, ALWAYS_REDIRECT_KEY], storage => {
         const tabId = event.tabId;
         const url = event.url;
         const hostname = extractHostname(url);
@@ -151,12 +151,18 @@ function navigationCompleteListener(event) {
             return;
         }
 
-        enableLinking(
-            target["link"],
-            tabId,
-            hostname,
-            target['name_short'] + " heeft ook een gesponsorde link!"
-        );
+        if (storage[ALWAYS_REDIRECT_KEY]) {
+            // Immediately redirect to the affiliated link
+            sponsortabs[tabId] = hostname;
+            navigateTo(tabId, target['link']);
+        } else {
+            enableLinking(
+                target["link"],
+                tabId,
+                hostname,
+                target['name_short'] + " heeft ook een gesponsorde link!"
+            );
+        }
     });
 }
 

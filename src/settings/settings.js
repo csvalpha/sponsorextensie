@@ -19,7 +19,14 @@ function saveOptions(e) {
     e.preventDefault();
 
     browser.storage.local.set({
-        [ALWAYS_REDIRECT_KEY]: document.querySelector('#always-redirect').checked
+        [ALWAYS_REDIRECT_KEY]: document.getElementById('always-redirect').checked
     });
+
+    const settingsSaved = document.getElementById('settings-saved');
+    console.log("Settings saved");
+    settingsSaved.innerHTML = "Wijzigingen opgeslagen";
+    setTimeout(function() {
+        settingsSaved.innerText = "";
+    }, 1000)
 }
-document.getElementById('settings').addEventListener('submit', saveOptions);
+document.getElementById('always-redirect').addEventListener('change', saveOptions);
