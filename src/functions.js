@@ -33,16 +33,7 @@ async function updateURLs() {
 
     browser.storage.local.set({
         [URLS_KEY]: data['webshops'].reduce(function (map, obj) {
-            // Convert array to map which maps the shop's url to it's info
-            let hostname = obj.orig_url;
-            if (hostname.indexOf('//') > -1) {
-                // Remove http(s):// and everything after the domain name
-                hostname = hostname.split('/')[2]
-            } else {
-                // Remove everything after the domain name
-                hostname = hostname.split('/')[0]
-            }
-            map[hostname] = obj;
+            map[extractHostname(obj.orig_url)] = obj;
             return map;
         })
     });
