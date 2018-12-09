@@ -58,12 +58,11 @@ function navigateTo(tabId, target) {
 /**
  * Show page action and notification for website which has an affiliate link
  * @param link {string} affiliate link
- * @param target {array} target information
  * @param tabId {number} tab id of the website
  * @param hostname {string} hostname of the website
  * @param notificationTitle {string} title of the notification
  */
-function enableLinking(link, target, tabId, hostname, notificationTitle) {
+function enableLinking(link, tabId, hostname, notificationTitle) {
     // Page action
     browser.pageAction.show(tabId);
     browser.pageAction.onClicked.addListener(function () {
@@ -94,10 +93,9 @@ function enableLinking(link, target, tabId, hostname, notificationTitle) {
  * Handle a website that has a custom affiliate link that was not received via the API
  * @param target {array} target information
  * @param tabId {number} tab id of the website
- * @param url {string} current website url
  * @param hostname {string} hostname of the website
  */
-function handleCustomTarget(target, tabId, url, hostname) {
+function handleCustomTarget(target, tabId, hostname) {
     // Check if we're still visiting the same site we already went through a sponsored link for
     if (hostname === sponsortabs[tabId]) {
         return;
@@ -105,7 +103,6 @@ function handleCustomTarget(target, tabId, url, hostname) {
 
     enableLinking(
         target['link'],
-        target,
         tabId,
         hostname,
         target['name_short'] + " heeft een C.S.V. Alpha affiliate link!"
@@ -131,7 +128,7 @@ function navigationCompleteListener(event) {
 
         // If we have a custom affiliate link for the current target
         if (custom_target) {
-            return handleCustomTarget(custom_target, tabId, url, hostname);
+            return handleCustomTarget(custom_target, tabId, hostname);
         }
 
         const urls = storage[URLS_KEY];
@@ -153,7 +150,6 @@ function navigationCompleteListener(event) {
 
         enableLinking(
             target["link"],
-            target,
             tabId,
             hostname,
             target['name_short'] + " heeft ook een gesponsorde link!"
