@@ -35,7 +35,7 @@ async function updateURLs() {
         [URLS_KEY]: data['webshops'].reduce(function (map, obj) {
             map[extractHostname(obj.orig_url)] = obj;
             return map;
-        })
+        }, [])
     });
 }
 
