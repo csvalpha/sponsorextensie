@@ -5,7 +5,53 @@ const LASTCHECK_KEY = 'lastcheck';
 const ALWAYS_REDIRECT_KEY = 'always-redirect';
 const NOTIFICATION_ID = 'sponsor-notification-';
 const UPDATE_CHECK_INTERVAL = 600;
-const CUSTOM_TARGETS = {};
+const CUSTOM_TARGETS = {
+    'ah.nl': {
+        'category': 'Eten & Drinken',
+        'name_short': 'Albert Heijn',
+        'link': 'https://www.sponsorkliks.com/link.php?club=4509&shop_id=2670&shop=Albert+Heijn&link=aHR0cCUzQSUyRiUyRnByZi5obiUyRmNsaWNrJTJGY2FtcmVmJTNBMTEwMGx3eWQlMkZwdWJyZWYlM0FTS180'
+    },
+    'bol.com': {
+        'category': 'Speelgoed',
+        'name_short': 'bol.com',
+        'link': 'https://www.sponsorkliks.com/link.php?club=4509&shop_id=12&shop=bol.com&link=aHR0cCUzQSUyRiUyRnBhcnRuZXJwcm9ncmFtbWEuYm9sLmNvbSUyRmNsaWNrJTJGY2xpY2slM0ZwJTNEMSUyNnQlM0R1cmwlMjZzJTNEODk2OCUyNnVybCUzRGh0dHAlMjUzQSUyRiUyRnd3dy5ib2wuY29tJTI2ZiUzRFRYTCUyNnN1YmlkJTNEU0tfNCUyNm5hbWUlM0Rib2wlMjUyMGhvbWU='
+    },
+    'conrad.nl': {
+        'category': 'Computers & Electronica',
+        'name_short': 'Conrad',
+        'link': 'https://www.sponsorkliks.com/link.php?club=4509&shop_id=1797&shop=Conrad&link=aHR0cCUzQSUyRiUyRnd3dy5jb25yYWQtZWxlY3Ryb25pYy5ubCUyRnR0JTJGJTNGdHQlM0Q5MjBfMTJfOTU0NzFfU0s0JTI2ciUzRA=='
+    },
+    'coolblue.nl': {
+        'category': 'Computers & Electronica',
+        'name_short': 'Coolblue',
+        'link': 'https://www.sponsorkliks.com/link.php?club=4509&shop_id=61&shop=Coolblue&link=aHR0cCUzQSUyRiUyRnByZi5obiUyRmNsaWNrJTJGY2FtcmVmJTNBMTAxMWwzNDc3JTJGcHVicmVmJTNBU0tfNCUyRmFkcmVmJTNBU0tfNA=='
+    },
+    'www.disneylandparis.com': {
+        'category': 'Reizen & Vakantie',
+        'name_short': 'Disneyland Parijs',
+        'link': 'https://www.sponsorkliks.com/link.php?club=4509&shop_id=2283&shop=Disneyland+Parijs&link=aHR0cHMlM0ElMkYlMkZjbGsudHJhZGVkb3VibGVyLmNvbSUyRmNsaWNrJTNGcCUzRDE5NzE2JTI2YSUzRDIwNDA5ODMlMjZnJTNENjc2MzEzJTI2RVBJJTNEU0tfNA=='
+    },
+    'klm.com': {
+        'category': 'Reizen & Vakantie',
+        'name_short': 'KLM',
+        'link': 'https://www.sponsorkliks.com/link.php?club=4509&shop_id=2148&shop=KLM&link=aHR0cCUzQSUyRiUyRnByZi5obiUyRmNsaWNrJTJGY2FtcmVmJTNBMTBsSEY5JTJGcHVicmVmJTNBU0tfNA=='
+    },
+    'mediamarkt.nl': {
+        'category': 'Computers & Electronica',
+        'name_short': 'MediaMarkt',
+        'link': 'https://www.sponsorkliks.com/link.php?club=4509&shop_id=2158&shop=MediaMarkt&link=aHR0cHMlM0ElMkYlMkZjbGsudHJhZGVkb3VibGVyLmNvbSUyRmNsaWNrJTNGcCUzRDI2MjMzNiUyNmElM0QyMDQwOTgzJTI2ZyUzRDIyNjI3MzkwJTI2RVBJJTNEU0tfNA=='
+    },
+    'thuisbezorgd.nl': {
+        'category': 'Eten & Drinken',
+        'name_short': 'Thuisbezorgd.nl',
+        'link': 'https://www.sponsorkliks.com/link.php?club=4509&shop_id=4&shop=Thuisbezorgd.nl&link=aHR0cCUzQSUyRiUyRnd3dy5hd2luMS5jb20lMkZhd2NsaWNrLnBocCUzRmdpZCUzRDM0MjkwMSUyNm1pZCUzRDEwNTEwJTI2YXdpbmFmZmlkJTNEMzI4ODQxJTI2bGlua2lkJTNEMjIxMTM1MSUyNmNsaWNrcmVmJTNEU0tfNA=='
+    },
+    'woonexpress.nl': {
+        'category': 'Huis & Tuin',
+        'name_short': 'Woonexpress',
+        'link': 'https://www.sponsorkliks.com/link.php?club=4509&shop_id=3114&shop=Woonexpress+NL&link=aHR0cCUzQSUyRiUyRnd3dy5hd2luMS5jb20lMkZhd2NsaWNrLnBocCUzRmdpZCUzRDMyMDEyOSUyNm1pZCUzRDg0OTQlMjZhd2luYWZmaWQlM0QzMjg4NDElMjZsaW5raWQlM0QyMDIyMzUxJTI2Y2xpY2tyZWYlM0RTS180'
+    },
+};
 const CHROME = typeof browser === 'undefined';
 
 if (CHROME) {
@@ -97,19 +143,26 @@ function enableLinking(link, tabId, hostname, notificationTitle) {
  * @param target {array} target information
  * @param tabId {number} tab id of the website
  * @param hostname {string} hostname of the website
+ * @param storage {object} storage object with at least the value of ALWAYS_REDIRECT_KEY
  */
-function handleCustomTarget(target, tabId, hostname) {
+function handleCustomTarget(target, tabId, hostname, storage) {
     // Check if we're still visiting the same site we already went through a sponsored link for
     if (hostname === sponsortabs[tabId]) {
         return;
     }
 
-    enableLinking(
-        target['link'],
-        tabId,
-        hostname,
-        target['name_short'] + ' heeft een C.S.R. affiliate link!'
-    );
+    if (storage[ALWAYS_REDIRECT_KEY]) {
+        // Immediately redirect to the affiliated link
+        sponsortabs[tabId] = hostname;
+        navigateTo(tabId, target['link']);
+    } else {
+        enableLinking(
+            target['link'],
+            tabId,
+            hostname,
+            target['name_short'] + ' heeft een C.S.R. affiliate link!'
+        );
+    }
 }
 
 /**
@@ -122,7 +175,7 @@ function navigationCompleteListener(event) {
         const url = event.url;
         const hostname = extractHostname(url);
         const nowww_hostname = hostname.replace(/^(www\.)/,'');
-        const custom_target = CUSTOM_TARGETS[hostname];
+        const custom_target = CUSTOM_TARGETS[nowww_hostname];
 
         // If there is no hostname found: return
         if (!hostname) {
@@ -131,7 +184,7 @@ function navigationCompleteListener(event) {
 
         // If we have a custom affiliate link for the current target
         if (custom_target) {
-            return handleCustomTarget(custom_target, tabId, hostname);
+            return handleCustomTarget(custom_target, tabId, hostname, storage);
         }
 
         const urls = storage[URLS_KEY];
