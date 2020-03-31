@@ -101,14 +101,14 @@ function navigateTo(tabId, target) {
  * @param link {string} affiliate link
  * @param tabId {number} tab id of the website
  * @param hostname {string} hostname of the website
- * @param referer {string} url of the website to redirect to after redirect from sponsorkliks.nl
+ * @param referrer {string} url of the website to redirect to after redirect from sponsorkliks.nl
  * @param notificationTitle {string} title of the notification
  */
-function enableLinking(link, tabId, hostname, referer, notificationTitle) {
+function enableLinking(link, tabId, hostname, referrer, notificationTitle) {
     // Page action
     browser.pageAction.show(tabId);
     browser.pageAction.onClicked.addListener(function () {
-        sponsortabs[tabId] = {'hostname': hostname, 'referer': referer};
+        sponsortabs[tabId] = {'hostname': hostname, 'referrer': referrer};
         browser.notifications.clear(NOTIFICATION_ID);
         navigateTo(tabId, link);
     });
@@ -124,7 +124,7 @@ function enableLinking(link, tabId, hostname, referer, notificationTitle) {
 
     browser.notifications.onClicked.addListener(function (notificationId) {
         if (notificationId === NOTIFICATION_ID+tabId) {
-            sponsortabs[tabId] = {'hostname': hostname, 'referer': referer};
+            sponsortabs[tabId] = {'hostname': hostname, 'referrer': referrer};
             browser.notifications.clear(notificationId);
             navigateTo(tabId, link);
         }
@@ -163,16 +163,16 @@ function navigationCompleteListener(event) {
         // Check if we're still visiting the same site we already went through a sponsored link for
         if (sponsortabs[tabId] && hostname === sponsortabs[tabId]['hostname']) {
             // If we have a origin location we came for, redirect back to that page
-            if(sponsortabs[tabId]['referer']){
-                navigateTo(tabId, sponsortabs[tabId]['referer']);
-                sponsortabs[tabId]['referer'] = null;
+            if(sponsortabs[tabId]['referrer']){
+                navigateTo(tabId, sponsortabs[tabId]['referrer']);
+                sponsortabs[tabId]['referrer'] = null;
             }
             return;
         }
 
         if (storage[ALWAYS_REDIRECT_KEY]) {
             // Immediately redirect to the affiliated link
-            sponsortabs[tabId] = {'hostname': hostname, 'referer': url};
+            sponsortabs[tabId] = {'hostname': hostname, 'referrer': url};
             navigateTo(tabId, target['link']);
         } else {
             enableLinking(
