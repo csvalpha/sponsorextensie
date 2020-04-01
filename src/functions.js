@@ -6,35 +6,55 @@ const ALWAYS_REDIRECT_KEY = 'always-redirect';
 const NOTIFICATION_ID = 'sponsor-notification-';
 const UPDATE_CHECK_INTERVAL = 600;
 const CUSTOM_TARGETS = {
-    'ah.nl': {
-        'category': 'Eten & Drinken',
-        'name_short': 'Albert Heijn',
-        'link': 'https://www.sponsorkliks.com/link.php?club=4509&shop_id=2670&shop=Albert+Heijn&link=aHR0cCUzQSUyRiUyRnByZi5obiUyRmNsaWNrJTJGY2FtcmVmJTNBMTEwMGx3eWQlMkZwdWJyZWYlM0FTS180'
-    },
     'coolblue.nl': {
         'category': 'Computers & Electronica',
         'name_short': 'Coolblue',
-        'link': 'https://www.sponsorkliks.com/link.php?club=4509&shop_id=61&shop=Coolblue&link=aHR0cCUzQSUyRiUyRnByZi5obiUyRmNsaWNrJTJGY2FtcmVmJTNBMTAxMWwzNDc3JTJGcHVicmVmJTNBU0tfNCUyRmFkcmVmJTNBU0tfNA=='
+        'link': 'https://www.sponsorkliks.com/link.php?club=4509&shop_id=61&shop=Coolblue&cn=NL&ln=nl'
     },
     'www.disneylandparis.com': {
         'category': 'Reizen & Vakantie',
         'name_short': 'Disneyland Parijs',
-        'link': 'https://www.sponsorkliks.com/link.php?club=4509&shop_id=2283&shop=Disneyland+Parijs&link=aHR0cHMlM0ElMkYlMkZjbGsudHJhZGVkb3VibGVyLmNvbSUyRmNsaWNrJTNGcCUzRDE5NzE2JTI2YSUzRDIwNDA5ODMlMjZnJTNENjc2MzEzJTI2RVBJJTNEU0tfNA=='
+        'link': 'https://www.sponsorkliks.com/link.php?club=4509&shop_id=2283&shop=Disneyland+Parijs&cn=NL&ln=nl'
+    },
+    'expert.nl': {
+        'category': 'Computers & Electronica',
+        'name_short': 'Expert',
+        'link': 'https://www.sponsorkliks.com/link.php?club=4509&shop_id=2339&shop=Expert&cn=NL&ln=nl'
+    },
+    'hema.nl': {
+        'category': 'Huis & Tuin',
+        'name_short': 'HEMA',
+        'link': 'https://www.sponsorkliks.com/link.php?club=4509&shop_id=3025&shop=HEMA&cn=nl&ln=nl'
     },
     'klm.com': {
         'category': 'Reizen & Vakantie',
         'name_short': 'KLM',
-        'link': 'https://www.sponsorkliks.com/link.php?club=4509&shop_id=2148&shop=KLM&link=aHR0cCUzQSUyRiUyRnByZi5obiUyRmNsaWNrJTJGY2FtcmVmJTNBMTBsSEY5JTJGcHVicmVmJTNBU0tfNA=='
+        'link': 'https://www.sponsorkliks.com/link.php?club=4509&shop_id=2148&shop=KLM&cn=NL&ln=nl'
     },
     'mediamarkt.nl': {
         'category': 'Computers & Electronica',
         'name_short': 'MediaMarkt',
-        'link': 'https://www.sponsorkliks.com/link.php?club=4509&shop_id=2158&shop=MediaMarkt&link=aHR0cHMlM0ElMkYlMkZjbGsudHJhZGVkb3VibGVyLmNvbSUyRmNsaWNrJTNGcCUzRDI2MjMzNiUyNmElM0QyMDQwOTgzJTI2ZyUzRDIyNjI3MzkwJTI2RVBJJTNEU0tfNA=='
+        'link': 'https://www.sponsorkliks.com/link.php?club=4509&shop_id=2158&shop=MediaMarkt&cn=NL&ln=nl'
+    },
+    'superdry.nl': {
+        'category': 'Mode & Cosmetica',
+        'name_short': 'Superdry',
+        'link': 'https://www.sponsorkliks.com/link.php?club=4509&shop_id=2160&shop=Superdry+NL&cn=nl&ln=nl'
+    },
+    'schuurman-schoenen.nl': {
+        'category': 'Mode & Cosmetica',
+        'name_short': 'Schuurman Schoenen',
+        'link': 'https://www.sponsorkliks.com/link.php?club=4509&shop_id=3033&shop=Schuurman+Schoenen&cn=nl&ln=nl'
     },
     'thuisbezorgd.nl': {
         'category': 'Eten & Drinken',
         'name_short': 'Thuisbezorgd.nl',
-        'link': 'https://www.sponsorkliks.com/link.php?club=4509&shop_id=4&shop=Thuisbezorgd.nl&link=aHR0cCUzQSUyRiUyRnd3dy5hd2luMS5jb20lMkZhd2NsaWNrLnBocCUzRmdpZCUzRDM0MjkwMSUyNm1pZCUzRDEwNTEwJTI2YXdpbmFmZmlkJTNEMzI4ODQxJTI2bGlua2lkJTNEMjIxMTM1MSUyNmNsaWNrcmVmJTNEU0tfNA=='
+        'link': 'https://www.sponsorkliks.com/link.php?club=4509&shop_id=4&shop=Thuisbezorgd.nl&cn=NL&ln=nl'
+    },
+    'vikingdirect.nl': {
+        'category': 'Zakelijk',
+        'name_short': 'viking.nl',
+        'link': 'https://www.sponsorkliks.com/link.php?club=4509&shop_id=48&shop=Viking&cn=nl&ln=nl'
     }
 };
 const CHROME = typeof browser === 'undefined';
@@ -141,7 +161,6 @@ function navigationCompleteListener(event) {
         const url = event.url;
         const hostname = extractHostname(url);
         const nowww_hostname = hostname.replace(/^(www\.)/,'');
-        const custom_target = CUSTOM_TARGETS[nowww_hostname];
 
         // If there is no hostname found: return
         if (!hostname) {
@@ -153,7 +172,7 @@ function navigationCompleteListener(event) {
             // Apparently we were not able to retrieve the urls from the API yet
             return;
         }
-        const target = (nowww_hostname !== hostname) ? urls[hostname] || urls[nowww_hostname] : urls[hostname] ;
+        const target = urls[hostname] || urls[nowww_hostname];
 
         // If we're not on a sponsored link capable page: return
         if (!target) {
