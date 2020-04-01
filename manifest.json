@@ -33,7 +33,6 @@
     "webNavigation",
     "alarms",
     "notifications",
-    "activeTab",
     "storage",
     "*://*.sponsorkliks.nl/api/*"
   ],
