@@ -21,3 +21,19 @@ De Chrome extensie kan vanuit de Chrome Webstore geïnstalleerd worden: [https:/
 #### Live
 De Firefox extensie kan vanuit de Add-on Store geïnstalleerd worden:
 [https://addons.mozilla.org/nl-NL/firefox/addon/csvalpha-sponsor-extensie/](https://addons.mozilla.org/nl-NL/firefox/addon/csvalpha-sponsor-extensie/)
+
+## Updaten van de plugin
+### Chrome
+1. Log in op [het Chrome Webstore Developer Dashboard](https://chrome.google.com/webstore/devconsole/)
+2. Selecteer de extensie
+3. Klik op "Package" in het menu
+4. Maak een zipje van de broncode (de `.git` map, `.gitignore` en `README.md` kan je hier buiten laten)
+5. Klik op de knop "Upload new package" en selecteer het zipje
+6. Klik op de knop "Publish item"
+
+### Firefox
+1. Log in op [het Firefox Add-on Developer Hub](https://addons.mozilla.org/en-GB/developers/)
+2.  Selecteer de extensie
+3. Klik op "Upload New Version"
+4. Maak een zipje van de broncode (de `.git` map, `.gitignore` en `README.md` kan je hier buiten laten)
+5. Selecteer het zipje en volg de stappen
