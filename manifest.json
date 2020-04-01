@@ -18,7 +18,7 @@
         "*://*.csvalpha.nl/*"
       ],
       "js": ["src/installed.js"],
-      "run_at": "document_end"
+      "run_at": "document_start"
     }
   ],
   "options_ui": {
