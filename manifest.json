@@ -12,6 +12,15 @@
   "background": {
     "page": "src/bg/background.html"
   },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.csvalpha.nl/*"
+      ],
+      "js": ["src/installed.js"],
+      "run_at": "document_end"
+    }
+  ],
   "options_ui": {
     "page": "src/settings/settings.html",
     "browser_style": true,
