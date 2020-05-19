@@ -21,6 +21,11 @@
     "notifications",
     "activeTab",
     "storage",
-    "*://*.csrdelft.nl/API/*"
-  ]
+    "*://*.sponsorkliks.nl/api/*"
+  ],
+  "applications": {
+    "gecko": {
+      "id": "sponsorextensie@csrdelft.nl"
+    }
+  }
 }
