@@ -19,8 +19,8 @@ export default class Notifications {
 
     chrome.notifications.create(id, {
       type: 'basic',
-      title: 'Sponsoring van C.S.V. Alpha geactiveerd!',
-      message: 'C.S.V. Alpha ontvangt commissie als op op deze website iets koopt.',
+      title: 'Sponsoring geactiveerd!',
+      message: 'C.S.V. Alpha ontvangt commissie als je op deze website iets koopt.',
       iconUrl: chrome.runtime.getURL('icons/icon-128.png')
     });
 
