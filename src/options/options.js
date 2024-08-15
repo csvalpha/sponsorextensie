@@ -1,15 +1,16 @@
+import Constants from "../constants.js";
+
 /**
  * Called when the DOM is loaded
  * Restores the saved settings
  */
 function restoreOptions() {
-    getStorage(ALWAYS_REDIRECT_KEY, storage => {
-        if (storage[ALWAYS_REDIRECT_KEY]) {
+    chrome.storage.local.get(Constants.ALWAYS_REDIRECT_KEY).then((storage) => {
+        if (storage[Constants.ALWAYS_REDIRECT_KEY]) {
             document.getElementById('always-redirect').checked = true;
         }
     });
 }
-document.addEventListener('DOMContentLoaded', restoreOptions);
 
 /**
  * Called when the form is submitted
@@ -18,8 +19,8 @@ document.addEventListener('DOMContentLoaded', restoreOptions);
 function saveOptions(e) {
     e.preventDefault();
 
-    browser.storage.local.set({
-        [ALWAYS_REDIRECT_KEY]: document.getElementById('always-redirect').checked
+    chrome.storage.local.set({
+        [Constants.ALWAYS_REDIRECT_KEY]: document.getElementById('always-redirect').checked
     });
 
     const settingsSaved = document.getElementById('settings-saved');
@@ -28,4 +29,6 @@ function saveOptions(e) {
         settingsSaved.innerText = '';
     }, 1000)
 }
+
+document.addEventListener('DOMContentLoaded', restoreOptions);
 document.getElementById('always-redirect').addEventListener('change', saveOptions);
