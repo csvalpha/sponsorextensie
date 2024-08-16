@@ -1,24 +1,11 @@
 import Constants from "./constants.js";
 import Notifications from "./notifications.js";
+import AdditionalSponsoredWebsites from "./additional_sponsored_websites.js";
 
 export default class Functions {
   filter = { url: [] };
   sponsoredTabs = {};
   notifications = new Notifications();
-
-  async setFilter() {
-    this.filter.url = await chrome.storage.local.get(Constants.SPONSOR_DOMAINS_STORAGE_KEY).then((result) => {
-      var filterList = [];
-      Object.keys(result[Constants.SPONSOR_DOMAINS_STORAGE_KEY]).forEach(domain => {
-        filterList.push({ hostSuffix: domain })
-      })
-      return filterList;
-    });
-  }
-
-  // const filter = {
-  //   url: [{ hostSuffix: 'google.com' }]
-  // };
 
   /**
    * Check if we should update the websites with affiliate links from the API
@@ -55,16 +42,14 @@ export default class Functions {
     // }
 
     await chrome.storage.local.set({
-      [Constants.SPONSOR_DOMAINS_STORAGE_KEY]: data['webshops']
+      [Constants.SPONSOR_DOMAINS_STORAGE_KEY]: AdditionalSponsoredWebsites.concat(data['webshops'])
         .filter(obj => !!obj.orig_url)
         .reduce(function (map, obj) {
           var urlObj = parseURL(obj.orig_url);
-          if (urlObj) map[urlObj.host] = obj;
+          if (urlObj) map[urlObj.hostname.replace(/^www\./,'')] = obj;
           return map;
         }, {}),
     });
-
-    await this.setFilter();
   }
 
   /**
@@ -74,14 +59,18 @@ export default class Functions {
   onTabUpdated(tabId, changeInfo, tab) {
     chrome.storage.local.get([Constants.SPONSOR_DOMAINS_STORAGE_KEY, Constants.ALWAYS_REDIRECT_KEY]).then((storage) => {
 
-      if (changeInfo["status"] && changeInfo["status"] == "complete") {
+      if (changeInfo["status"] && changeInfo["status"] == "loading") {
         const url = URL.parse(tab["url"]);
 
         // if url is valid
         if (url) {
           const hostname = url.hostname;
-          const no_www_hostname = hostname.replace(/^(www\.)/,'');
+          const no_www_hostname = hostname.replace(/^\w+\./,'');
           const domains = storage[Constants.SPONSOR_DOMAINS_STORAGE_KEY];
+          if (!domains) {
+            this.updateUrls();
+            return;
+          }
           const target = domains[hostname] || domains[no_www_hostname];
 
           if (target) {
@@ -108,7 +97,7 @@ export default class Functions {
                 this.notifications.notifyOfAffiliation(this, tabId, target['name_short'], url, target['link']);
                 return;
             }
-          };
+          }
         };
       }
     });
