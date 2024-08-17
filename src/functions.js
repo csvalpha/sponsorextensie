@@ -34,13 +34,6 @@ export default class Functions {
     const response = await fetch(Constants.API);
     const data = await response.json();
 
-    // Add custom targets that are not present in the API
-    // for (var url in CUSTOM_TARGETS) {
-    //   var custom_data = CUSTOM_TARGETS[url];
-    //   custom_data['orig_url'] = url;
-    //   data['webshops'].push(custom_data)
-    // }
-
     await chrome.storage.local.set({
       [Constants.SPONSOR_DOMAINS_STORAGE_KEY]: AdditionalSponsoredWebsites.concat(data['webshops'])
         .filter(obj => !!obj.orig_url)
@@ -58,8 +51,7 @@ export default class Functions {
    */
   onTabUpdated(tabId, changeInfo, tab) {
     chrome.storage.local.get([Constants.SPONSOR_DOMAINS_STORAGE_KEY, Constants.ALWAYS_REDIRECT_KEY]).then((storage) => {
-
-      if (changeInfo["status"] && changeInfo["status"] == "loading") {
+      if (changeInfo["status"] && changeInfo["status"] == "complete") {
         const url = URL.parse(tab["url"]);
 
         // if url is valid

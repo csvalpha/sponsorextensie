@@ -141,7 +141,7 @@ export default [
   },
   {
     name_short: "Tellsell",
-    orig_url: "telsell.com functions.js:103:23",
+    orig_url: "telsell.com",
     link: "https://www.sponsorkliks.com/link.php?club=4509&shop_id=3598&shop=Telsell+NL&link=aHR0cHMlM0ElMkYlMkZ3d3cuYXdpbjEuY29tJTJGY3JlYWQucGhwJTNGYXdpbm1pZCUzRDg1MTUlMjZhd2luYWZmaWQlM0QzMjg4NDElMjZjbGlja3JlZiUzRFNLXzQ1MDklMjRhcGk="
   },
   {
