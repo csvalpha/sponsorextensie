@@ -15,9 +15,9 @@ export default class Functions {
     chrome.storage.local.get([Constants.SPONSOR_DOMAINS_STORAGE_KEY, Constants.LASTCHECK_KEY]).then(async (storage) => {
       if (typeof storage[Constants.SPONSOR_DOMAINS_STORAGE_KEY] !== 'undefined') {
         const lastCheck = storage[Constants.LASTCHECK_KEY] || 0;
-        if (lastCheck < unixDayAgo()) {
+        if (lastCheck < this.unixDayAgo()) {
           chrome.storage.local.set({
-            [Constants.LASTCHECK_KEY]: unixTime(new Date()),
+            [Constants.LASTCHECK_KEY]: this.unixTime(new Date()),
           });
           await this.updateUrls();
         }
@@ -44,8 +44,8 @@ export default class Functions {
     await chrome.storage.local.set({
       [Constants.SPONSOR_DOMAINS_STORAGE_KEY]: AdditionalSponsoredWebsites.concat(data['webshops'])
         .filter(obj => !!obj.orig_url)
-        .reduce(function (map, obj) {
-          var urlObj = URL.parse(obj.orig_url);
+        .reduce((map, obj) => {
+          var urlObj = this.parseURLFromApi(obj.orig_url);
           if (urlObj) map[urlObj.hostname.replace(/^www\./, '')] = obj;
           return map;
         }, {}),
@@ -104,6 +104,16 @@ export default class Functions {
   }
 
   /**
+   * Parse a string url to an URL object
+   * @param url {string} full url
+   * @returns {string} url with the protocol, path and get parameters stripped
+   */
+  parseURLFromApi(url) {
+    if (!url.match(/^(http|https)/i)) url = "https://" + url;
+    return URL.parse(url);
+  }
+
+  /**
    * Change the current website on the specified tab
    * @param tabId {number} id of the tab to change the website of
    * @param target {string} new website url
@@ -111,23 +121,23 @@ export default class Functions {
   navigateTo(tabId, target) {
     chrome.tabs.update(tabId, { url: target });
   }
-}
 
-/**
- * Return the unix timestamp of 1 day ago
- * @returns {number} unix timestamp in seconds
- */
-function unixDayAgo() {
-  const d = new Date();
-  d.setDate(d.getDate() - 1);
-  return unixTime(d);
-}
+  /**
+   * Return the unix timestamp of 1 day ago
+   * @returns {number} unix timestamp in seconds
+   */
+  unixDayAgo() {
+    const d = new Date();
+    d.setDate(d.getDate() - 1);
+    return this.unixTime(d);
+  }
 
-/**
-* Convert Date object to unix time in seconds
-* @param date {Date} Date object
-* @returns {number} unix time in seconds
-*/
-function unixTime(date) {
-  return Math.round((date.getTime() / 1000));
+  /**
+   * Convert Date object to unix time in seconds
+   * @param date {Date} Date object
+   * @returns {number} unix time in seconds
+   */
+  unixTime(date) {
+    return Math.round((date.getTime() / 1000));
+  }
 }
