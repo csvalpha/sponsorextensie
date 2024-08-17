@@ -13,17 +13,17 @@ export default class Functions {
    */
   async checkUpdateUrls() {
     chrome.storage.local.get([Constants.SPONSOR_DOMAINS_STORAGE_KEY, Constants.LASTCHECK_KEY]).then(async (storage) => {
-        if (typeof storage[Constants.SPONSOR_DOMAINS_STORAGE_KEY] !== 'undefined') {
-            const lastCheck = storage[Constants.LASTCHECK_KEY] || 0;
-            if (lastCheck < unixDayAgo()) {
-                chrome.storage.local.set({
-                    [Constants.LASTCHECK_KEY]: unixTime(new Date()),
-                });
-                await this.updateUrls();
-            }
-        } else {
+      if (typeof storage[Constants.SPONSOR_DOMAINS_STORAGE_KEY] !== 'undefined') {
+        const lastCheck = storage[Constants.LASTCHECK_KEY] || 0;
+        if (lastCheck < unixDayAgo()) {
+          chrome.storage.local.set({
+            [Constants.LASTCHECK_KEY]: unixTime(new Date()),
+          });
           await this.updateUrls();
         }
+      } else {
+        await this.updateUrls();
+      }
     });
   }
 
@@ -45,8 +45,8 @@ export default class Functions {
       [Constants.SPONSOR_DOMAINS_STORAGE_KEY]: AdditionalSponsoredWebsites.concat(data['webshops'])
         .filter(obj => !!obj.orig_url)
         .reduce(function (map, obj) {
-          var urlObj = parseURL(obj.orig_url);
-          if (urlObj) map[urlObj.hostname.replace(/^www\./,'')] = obj;
+          var urlObj = URL.parse(obj.orig_url);
+          if (urlObj) map[urlObj.hostname.replace(/^www\./, '')] = obj;
           return map;
         }, {}),
     });
@@ -65,7 +65,7 @@ export default class Functions {
         // if url is valid
         if (url) {
           const hostname = url.hostname;
-          const no_www_hostname = hostname.replace(/^\w+\./,'');
+          const no_www_hostname = hostname.replace(/^\w+\./, '');
           const domains = storage[Constants.SPONSOR_DOMAINS_STORAGE_KEY];
           if (!domains) {
             this.updateUrls();
@@ -84,18 +84,18 @@ export default class Functions {
               }
               return;
             }
-            
+
             // We are not an affiliated domain but affiliation is not active yet
             if (storage[Constants.ALWAYS_REDIRECT_KEY]) {
-                // Immediately redirect to the affiliated link
-                this.sponsoredTabs[tabId] = { 'hostname': hostname, 'referrer': url.toString() };
-                this.navigateTo(tabId, target['link']);
-                return;
+              // Immediately redirect to the affiliated link
+              this.sponsoredTabs[tabId] = { 'hostname': hostname, 'referrer': url.toString() };
+              this.navigateTo(tabId, target['link']);
+              return;
             } else {
 
-                // Notify the user that there is an afiliation
-                this.notifications.notifyOfAffiliation(this, tabId, target['name_short'], url, target['link']);
-                return;
+              // Notify the user that there is an afiliation
+              this.notifications.notifyOfAffiliation(this, tabId, target['name_short'], url, target['link']);
+              return;
             }
           }
         };
@@ -112,17 +112,6 @@ export default class Functions {
     chrome.tabs.update(tabId, { url: target });
   }
 }
-
-/**
- * Parse a string url to an URL object
- * @param url {string} full url
- * @returns {string} url with the protocol, path and get parameters stripped
- */
-function parseURL(url) {
-  if (!url.match(/^(http|https)/i)) url = "https://" + url;
-  return URL.parse(url);
-}
-
 
 /**
  * Return the unix timestamp of 1 day ago

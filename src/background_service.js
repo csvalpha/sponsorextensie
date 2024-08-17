@@ -12,9 +12,9 @@ async function setAlarm() {
 
   if (!alarm) {
     // Register for periodic endpoint updates
-    await chrome.alarms.create("update-sponsor-links-alarm", { 
+    await chrome.alarms.create("update-sponsor-links-alarm", {
       delayInMinutes: Constants.UPDATE_CHECK_INTERVAL,
-      periodInMinutes: Constants.UPDATE_CHECK_INTERVAL 
+      periodInMinutes: Constants.UPDATE_CHECK_INTERVAL
     });
 
     chrome.alarms.onAlarm.addListener(function (alarm) {

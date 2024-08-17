@@ -13,7 +13,7 @@ export default class Notifications {
       chrome.notifications.onClicked.removeListener(this.currentNoticationOnClickedListener);
     }
   }
-  
+
   notifyOfRedirect(tabId) {
     var id = Constants.NOTIFICATION_ID + 'redirected-' + tabId;
 

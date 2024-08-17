@@ -19,7 +19,9 @@
   ],
   "content_scripts": [
     {
-      "js": ["src/installed.js"],
+      "js": [
+        "src/installed.js"
+      ],
       "matches": [
         "*://*.csvalpha.nl/*"
       ]
@@ -27,7 +29,9 @@
   ],
   "background": {
     "service_worker": "src/background_service.js",
-    "scripts": ["src/background_service.js"],
+    "scripts": [
+      "src/background_service.js"
+    ],
     "type": "module"
   },
   "action": {
@@ -42,4 +46,3 @@
     "open_in_tab": false
   }
 }
-  
